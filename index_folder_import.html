@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>今日の三毛猫さん</title>
+<style>
+:root{--bg:#080808;--panel:rgba(255,255,255,.045);--text:#f2f0ec;--muted:#aaa49c;--line:#77716a;--button:#f4f1eb;--buttonText:#090909}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:ui-serif,"Yu Mincho", "Hiragino Mincho ProN",serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 22%,#252321 0,transparent 58%);z-index:-1}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+header{position:absolute;right:20px;top:18px;display:flex;gap:8px;z-index:3}.small-btn,.outline-btn{border:1px solid var(--line);background:transparent;color:var(--text);padding:9px 13px;letter-spacing:.08em;transition:.25s}.small-btn:hover,.outline-btn:hover{background:var(--text);color:var(--bg)}
+main{width:min(900px,100%);margin:auto;padding:78px 20px 56px;text-align:center}.eyebrow{font:10px/1.5 sans-serif;letter-spacing:.35em;color:var(--muted);text-transform:uppercase}
+h1{font-weight:400;font-size:clamp(30px,5vw,48px);letter-spacing:.12em;margin:12px 0 7px}.description{color:var(--muted);font-size:14px;letter-spacing:.12em;margin:0}
+.cat-stage{margin:30px auto 22px;width:min(340px,78vw);aspect-ratio:1;display:grid;place-items:center;position:relative;background:#000;border:1px solid var(--line);overflow:hidden}
+.cat-stage:after{content:"";position:absolute;inset:12px;border:1px solid rgba(255,255,255,.12);pointer-events:none}
+.cat-stage img{width:86%;height:86%;object-fit:contain;position:relative;z-index:1}.cat-stage img[src$=".svg"]{background:#000}
+.status{min-height:28px;color:var(--muted);font-size:13px;letter-spacing:.08em;margin:10px 0}
+.primary{position:relative;overflow:hidden;background:transparent;color:var(--text);border:1px solid var(--line);padding:16px 50px;min-width:230px;letter-spacing:.2em;font-size:14px;transition:color .35s,border-color .35s}.primary:before{content:"";position:absolute;inset:0;background:var(--button);transform:translateY(101%);transition:transform .35s;z-index:0}.primary:hover:before,.primary:focus-visible:before{transform:translateY(0)}.primary:hover,.primary:focus-visible{color:var(--buttonText);border-color:var(--button)}.primary span{position:relative;z-index:1}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:38px auto 20px;max-width:520px}.footnote{font:10px sans-serif;letter-spacing:.1em;color:#777}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10;overflow:auto;padding:22px}.overlay.open{display:block}.dialog{width:min(860px,100%);margin:25px auto;background:#101010;border:1px solid var(--line);padding:24px;text-align:left;box-shadow:0 20px 80px #000}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}.dialog h2{font-size:22px;font-weight:400;letter-spacing:.1em;margin:0}.dialog h3{font-size:15px;font-weight:400;letter-spacing:.08em;margin:24px 0 12px;color:#ddd}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px;font:12px sans-serif;color:var(--muted)}.field input,.field textarea,.field select{width:100%;background:#080808;color:var(--text);border:1px solid #514d47;padding:10px;min-width:0}.field textarea{min-height:68px}.field.full{grid-column:1/-1}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.table-wrap{overflow-x:auto;border:1px solid #403d38;background:rgba(0,0,0,.18)}table{width:100%;border-collapse:collapse;font:12px/1.5 sans-serif;min-width:590px}th,td{padding:10px;text-align:left;border-bottom:1px solid #35322e}th{color:#aaa;font-weight:400}td input{width:90px!important;padding:6px!important}td img{width:42px;height:42px;object-fit:contain;background:#000}.pill{border:1px solid #605a52;padding:3px 7px;font-size:10px;color:#c8c0b5}.danger{border-color:#8b514d;color:#f0b5b0}.muted{color:var(--muted);font-size:12px}.result-card{display:none;margin:25px auto 0;width:min(420px,100%);padding:25px 20px 30px;background:#f0eee9;color:#181715;border:1px solid #aaa59c;outline:1px solid #d0ccc3;outline-offset:-7px;position:relative}.result-card.show{display:block}.paw{font-size:26px;letter-spacing:.25em;color:#77736d;margin:0 0 16px}.result-card .result-name{font-size:clamp(22px,4vw,30px);letter-spacing:.08em;overflow-wrap:anywhere;margin:12px 0}.result-card .result-meta{font:10px sans-serif;letter-spacing:.12em;color:#777}.result-card img{display:none;max-width:100%;max-height:250px;object-fit:contain}.result-card.image-mode img{display:block;margin:10px auto}.result-card.image-mode .result-name{font-size:18px}
+.history-list{list-style:none;padding:0;margin:0}.history-list li{display:flex;justify-content:space-between;gap:16px;padding:12px 4px;border-bottom:1px solid #38342f}.history-list time{font:11px sans-serif;color:#999;white-space:nowrap}
+.notice{padding:10px 12px;border:1px solid #625d54;color:#ccc;font:12px/1.6 sans-serif;margin:12px 0}
+@media(max-width:560px){header{top:10px;right:10px}.small-btn{padding:8px 9px;font-size:11px}main{padding-top:72px}.cat-stage{margin-top:25px}.dialog{padding:16px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.primary{min-width:210px}}
+</style>
+</head>
+<body>
+<header><button class="small-btn" id="historyOpen">当選履歴</button><button class="small-btn" id="adminOpen">管理画面</button></header>
+<main>
+  <div class="eyebrow">A LITTLE FORTUNE WITH CALICO</div>
+  <h1 id="pageTitle">今日の三毛猫さん</h1>
+  <p class="description" id="pageDescription">気まぐれな三毛猫と遊ぼう</p>
+  <div class="cat-stage"><img id="catImage" src="item-images/mikeneko_sit.svg" alt="三毛猫"></div>
+  <div class="status" id="statusText">三毛猫があらわれた。</div>
+  <button class="primary" id="drawButton"><span>クジを引く</span></button>
+  <div class="actions"><button class="outline-btn" id="historyOpen2">当選履歴を見る</button></div>
+  <div id="resultCard" class="result-card" aria-live="polite"><div class="paw">●　●</div><div class="paw">　●</div><div class="result-meta">TODAY'S FORTUNE</div><div class="result-name" id="resultName"></div><img id="resultImage" alt="当選アイテム"><div class="paw">●　●</div></div>
+  <div class="actions" id="resultActions" style="display:none"><button class="outline-btn" id="downloadResult">当選カードをダウンロード</button></div>
+  <div class="rule"></div><div class="footnote">PLEASE BE KIND TO OUR MOODY CAT.</div>
+</main>
+
+<div class="overlay" id="choiceOverlay"><section class="dialog" style="max-width:460px;text-align:center">
+  <div class="dialog-head"><h2>三毛猫があらわれた。</h2><button class="outline-btn" data-close="choiceOverlay">閉じる</button></div>
+  <p class="muted">どうする？　選んだ行動で運命が決まるかも。</p>
+  <div class="cat-stage" style="width:180px;margin:16px auto"><img src="item-images/mikeneko_sit.svg" alt="三毛猫"></div>
+  <div class="actions"><button class="primary" id="sayHello"><span>声を掛ける</span></button><button class="primary" id="petCat"><span>撫でる</span></button></div>
+</section></div>
+
+<div class="overlay" id="historyOverlay"><section class="dialog">
+  <div class="dialog-head"><h2>当選履歴</h2><button class="outline-btn" data-close="historyOverlay">閉じる</button></div>
+  <p class="muted">当選したアイテムのみを記録しています。</p><ul class="history-list" id="historyList"></ul>
+</section></div>
+
+<div class="overlay" id="adminOverlay"><section class="dialog">
+  <div class="dialog-head"><h2>管理画面</h2><button class="outline-btn" data-close="adminOverlay">閉じる</button></div>
+  <div id="loginArea">
+    <p class="muted">管理者専用。管理者2名で共通の認証情報を使用します。</p>
+    <div class="form-grid"><label class="field full">パスワード<input type="password" id="adminPassword" autocomplete="current-password"></label></div>
+    <div class="row" style="margin-top:12px"><button class="outline-btn" id="loginButton">ログイン</button><span id="loginMessage" class="muted"></span></div>
+  </div>
+  <div id="adminArea" style="display:none">
+    <div class="notice">設定はこのブラウザーのローカル保存領域に保存されます。「更新・再読込」で保存内容を再読み込みできます。複数端末での共有にはサーバー接続が必要です。</div>
+    <div class="row"><button class="outline-btn" id="refreshButton">更新・再読込</button><button class="outline-btn" id="logoutButton">ログアウト</button></div>
+    <h3>基本設定</h3>
+    <div class="form-grid">
+      <label class="field">タイトル<input id="cfgTitle"></label>
+      <label class="field">説明文<input id="cfgDescription"></label>
+      <label class="field">文字色<input type="color" id="cfgTextColor"></label>
+      <label class="field">クジ引きボタン色<input type="color" id="cfgButtonColor"></label>
+      <label class="field">線の色<input type="color" id="cfgLineColor"></label>
+      <label class="field">1日に引ける回数<input type="number" id="cfgDailyLimit" min="1" max="1000"></label>
+      <label class="field full">当選時のセリフ（全アイテム共通）<input id="cfgWinLine"></label>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="outline-btn" id="saveSettings">設定を保存</button><button class="outline-btn danger" id="resetDaily">本日の回数をリセット</button><button class="outline-btn danger" id="resetItems">アイテム在庫数を初期値に戻す</button></div>
+    <h3>アイテム管理</h3>
+    <p class="muted">数量は在庫数です。レアを有効にすると、抽選重みが通常アイテムより低くなります。数量0のアイテムは抽選されません。</p>
+    <div class="table-wrap"><table><thead><tr><th>画像</th><th>名称</th><th>数量</th><th>レア</th><th>画像URL</th><th>操作</th></tr></thead><tbody id="itemRows"></tbody></table></div>
+    <h3>アイテムを追加・編集</h3>
+    <form id="itemForm"><input type="hidden" id="itemId">
+      <div class="form-grid">
+        <label class="field">アイテム名<input id="itemName" required maxlength="100"></label>
+        <label class="field">個数<input id="itemCount" type="number" min="0" value="1" required></label>
+        <label class="field">レア判定<select id="itemRare"><option value="false">通常</option><option value="true">レア（低確率）</option></select></label>
+        <label class="field">画像ファイル（任意）<input id="itemFile" type="file" accept="image/*,.svg"></label>
+        <label class="field full">画像URL（任意）<input id="itemUrl" placeholder="item-images/example.svg または画像URL"></label>
+        <label class="field full">追加情報（任意）<textarea id="itemInfo"></textarea></label>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="outline-btn" type="submit">アイテムを保存</button><button class="outline-btn" type="button" id="clearItemForm">入力をクリア</button></div>
+    </form>
+    <h3>コードから複数アイテムを追加</h3>
+    <p class="muted">JSON配列で複数件を一度に登録できます。例：名前、数量、レア判定、画像URL、追加情報。</p>
+    <label class="field">JSON<textarea id="bulkJson">[
+  {"name":"ねずみのおもちゃ","count":3,"rare":false,"image":"item-images/mikeneko_mouse.svg","info":"お気に入りのおもちゃ"},
+  {"name":"お魚のおもちゃ","count":2,"rare":true,"image":"item-images/calico_cat_fish.svg","info":"レアアイテム"},
+  {"name":"ハズレ","count":5,"rare":false,"image":"item-images/calico_cat_hazure.svg","info":"また遊んでね"}
+]</textarea></label>
+    <div class="row" style="margin-top:10px"><button class="outline-btn" id="bulkAdd">JSONから追加</button><button class="outline-btn" id="exportData">設定・アイテムをJSON出力</button><label class="outline-btn" style="cursor:pointer">JSONを読み込む<input type="file" id="importData" accept=".json,application/json" hidden></label></div>
+    <h3>画像フォルダーから自動でアイテム追加</h3>
+    <p class="muted">画像フォルダーを選ぶと、中の画像を1枚ずつアイテムとして自動登録します。ファイル名がアイテム名になり、登録後に「編集」から名前・数量・レア設定を変更できます。対応形式：PNG / JPG / GIF / WEBP / SVG。</p>
+    <div class="row">
+      <label class="outline-btn" style="cursor:pointer">画像フォルダーを選択<input type="file" id="imageFolder" accept="image/*,.svg" webkitdirectory directory multiple hidden></label>
+      <span id="folderStatus" class="muted">フォルダー未選択</span>
+    </div>
+    <p class="muted">画像はこのブラウザー内に保存されます。別端末と共有する場合は、設定・アイテムをJSON出力して移行してください。</p>
+  </div>
+</section></div>
+
+<script>
+const PASS_HASH = 'ab51004e9d71a485f160f655fb9e72bcdef8f5ca4178b26938b49471456fd11c';
+const STORAGE_KEY = 'mikenekoDrawApp.v1';
+const DAY_KEY = 'mikenekoDrawDay.v1';
+const defaultItems = [
+ {id:'mouse',name:'ねずみのおもちゃ',count:3,initialCount:3,rare:false,image:'item-images/mikeneko_mouse.svg',info:'ねずみのおもちゃ'},
+ {id:'fish',name:'お魚のおもちゃ',count:2,initialCount:2,rare:true,image:'item-images/calico_cat_fish.svg',info:'お魚のおもちゃ'},
+ {id:'hazure',name:'ハズレ',count:5,initialCount:5,rare:false,image:'item-images/calico_cat_hazure.svg',info:'また遊んでね'},
+ {id:'bra',name:'三毛猫さんのごほうび',count:1,initialCount:1,rare:true,image:'item-images/mikeneko_bra.svg',info:''}
+];
+const defaults = {title:'今日の三毛猫さん',description:'気まぐれな三毛猫と遊ぼう',textColor:'#f2f0ec',buttonColor:'#f4f1eb',lineColor:'#77716a',dailyLimit:1,winLine:'やったね！ 三毛猫さんからの贈り物。',items:defaultItems,history:[],draws:{}};
+let state, adminLoggedIn=false, pendingAction=null, lastResult=null;
+const $=id=>document.getElementById(id);
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function loadState(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');state=s&&s.items?{...clone(defaults),...s,items:s.items,history:s.history||[],draws:s.draws||{}}:clone(defaults)}catch(e){state=clone(defaults)}}
+function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function localDay(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function ensureDay(){const day=localDay();if(localStorage.getItem(DAY_KEY)!==day){localStorage.setItem(DAY_KEY,day)}if(!state.draws[day])state.draws[day]=0;saveState()}
+function applyTheme(){document.documentElement.style.setProperty('--text',state.textColor);document.documentElement.style.setProperty('--button',state.buttonColor);document.documentElement.style.setProperty('--buttonText',contrast(state.buttonColor));document.documentElement.style.setProperty('--line',state.lineColor);$('pageTitle').textContent=state.title;$('pageDescription').textContent=state.description;document.title=state.title}
+function contrast(hex){const h=hex.replace('#','');const n=parseInt(h,16);return (((n>>16)*.299+((n>>8)&255)*.587+(n&255)*.114)>145)?'#090909':'#fff'}
+function openOverlay(id){$(id).classList.add('open')}function closeOverlay(id){$(id).classList.remove('open')}
+async function hash(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function currentCount(){ensureDay();return state.draws[localDay()]||0}
+function catForAction(action){const choices=action==='pet'?['item-images/mikeneko_sit.svg','item-images/mikeneko_mouse.svg']:['item-images/mikeneko_sit.svg','item-images/calico_cat_fish.svg'];$('catImage').src=choices[Math.floor(Math.random()*choices.length)]}
+function startDraw(){ensureDay();if(currentCount()>=Number(state.dailyLimit)){ $('statusText').textContent='今日はもう遊んだよ。また明日ね。';return}if(!state.items.some(i=>Number(i.count)>0)){$('statusText').textContent='アイテムがありません。管理画面で追加してください。';return}openOverlay('choiceOverlay')}
+function choose(action){closeOverlay('choiceOverlay');catForAction(action);const reactions=action==='pet'?['シャーされた','嚙まれた','尻尾ベシベシされた','逃げられた','ゴロゴロ喉を鳴らした','ミギャーと鳴かれた','スリスリされた']:['シャーされた','逃げられた','ミギャーと鳴かれた','ゴロゴロ喉を鳴らした','スリスリされた'];const reaction=reactions[Math.floor(Math.random()*reactions.length)];$('statusText').textContent=`${reaction}。`;const available=state.items.filter(i=>Number(i.count)>0);const weighted=[];available.forEach(i=>{const w=i.rare?1:5;for(let n=0;n<w;n++)weighted.push(i)});const picked=weighted[Math.floor(Math.random()*weighted.length)];picked.count=Math.max(0,Number(picked.count)-1);state.draws[localDay()]=(state.draws[localDay()]||0)+1;const now=new Date();state.history.unshift({name:picked.name,date:now.toLocaleString('ja-JP'),iso:now.toISOString(),image:picked.image||'',info:picked.info||''});lastResult={name:picked.name,image:picked.image||'',date:now.toLocaleDateString('ja-JP')};saveState();showResult(lastResult);$('statusText').textContent=`${reaction}。 ${state.winLine}`;renderHistory();if(adminLoggedIn)renderItems()}
+function showResult(r){$('resultName').textContent=r.name;$('resultImage').removeAttribute('src');$('resultCard').classList.remove('image-mode');$('resultActions').style.display='flex';$('resultCard').classList.add('show');if(r.image){$('resultImage').src=r.image;$('resultImage').onload=()=>{$('resultCard').classList.add('image-mode')};$('resultImage').onerror=()=>{$('resultCard').classList.remove('image-mode')}}$('resultCard').scrollIntoView({behavior:'smooth',block:'nearest'})}
+function renderHistory(){const ul=$('historyList');ul.innerHTML='';if(!state.history.length){ul.innerHTML='<li class="muted">まだ当選履歴はありません。</li>';return}state.history.forEach(h=>{const li=document.createElement('li'),name=document.createElement('span'),time=document.createElement('time');name.textContent=h.name;time.textContent=h.date;li.append(name,time);ul.append(li)})}
+function renderItems(){const tb=$('itemRows');tb.innerHTML='';state.items.forEach(i=>{const tr=document.createElement('tr');const img=document.createElement('img');img.src=i.image||'';img.alt='';img.onerror=()=>img.style.visibility='hidden';const tdImg=document.createElement('td');tdImg.append(img);const name=document.createElement('td');name.textContent=i.name;const count=document.createElement('td');const inp=document.createElement('input');inp.type='number';inp.min='0';inp.value=i.count;inp.addEventListener('change',()=>{i.count=Math.max(0,Number(inp.value)||0);saveState()});count.append(inp);const rare=document.createElement('td');rare.textContent=i.rare?'レア':'通常';const url=document.createElement('td');url.style.maxWidth='180px';url.style.overflowWrap='anywhere';url.textContent=i.image||'—';const act=document.createElement('td');const edit=document.createElement('button');edit.className='outline-btn';edit.textContent='編集';edit.onclick=()=>fillItemForm(i);const del=document.createElement('button');del.className='outline-btn danger';del.textContent='削除';del.onclick=()=>{if(confirm(`「${i.name}」を削除しますか？`)){state.items=state.items.filter(x=>x.id!==i.id);saveState();renderItems()}};act.append(edit,del);[tdImg,name,count,rare,url,act].forEach(td=>tr.append(td));tb.append(tr)})}
+function fillItemForm(i){$('itemId').value=i.id;$('itemName').value=i.name;$('itemCount').value=i.count;$('itemRare').value=String(!!i.rare);$('itemUrl').value=i.image||'';$('itemInfo').value=i.info||'';$('itemForm').scrollIntoView({behavior:'smooth'})}
+function clearItemForm(){$('itemForm').reset();$('itemId').value='';$('itemCount').value='1';$('itemFile').value=''}
+function loadSettingsForm(){$('cfgTitle').value=state.title;$('cfgDescription').value=state.description;$('cfgTextColor').value=state.textColor;$('cfgButtonColor').value=state.buttonColor;$('cfgLineColor').value=state.lineColor;$('cfgDailyLimit').value=state.dailyLimit;$('cfgWinLine').value=state.winLine}
+async function login(){const val=$('adminPassword').value;if(await hash(val)===PASS_HASH){adminLoggedIn=true;$('loginArea').style.display='none';$('adminArea').style.display='block';$('loginMessage').textContent='';$('adminPassword').value='';loadSettingsForm();renderItems()}else{$('loginMessage').textContent='パスワードが違います。'}}
+function logout(){adminLoggedIn=false;$('loginArea').style.display='block';$('adminArea').style.display='none';$('adminPassword').value=''}
+function saveSettings(){state.title=$('cfgTitle').value.trim()||defaults.title;state.description=$('cfgDescription').value;state.textColor=$('cfgTextColor').value;state.buttonColor=$('cfgButtonColor').value;state.lineColor=$('cfgLineColor').value;state.dailyLimit=Math.max(1,Number($('cfgDailyLimit').value)||1);state.winLine=$('cfgWinLine').value;saveState();applyTheme();alert('設定を保存しました。')}
+async function saveItem(e){e.preventDefault();let image=$('itemUrl').value.trim();const file=$('itemFile').files[0];if(file){image=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}const id=$('itemId').value||('item-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));const old=state.items.find(x=>x.id===id);const item={id,name:$('itemName').value.trim(),count:Math.max(0,Number($('itemCount').value)||0),initialCount:old?old.initialCount:Math.max(0,Number($('itemCount').value)||0),rare:$('itemRare').value==='true',image,info:$('itemInfo').value};if(old)state.items=state.items.map(x=>x.id===id?item:x);else state.items.push(item);saveState();renderItems();clearItemForm()}
+function resetDaily(){if(!confirm('本日のクジ引き回数をリセットしますか？'))return;state.draws[localDay()]=0;saveState();$('statusText').textContent='本日の回数をリセットしました。';alert('本日の回数をリセットしました。')}
+function resetItems(){if(!confirm('全アイテムの数量を登録時の初期値に戻しますか？'))return;state.items.forEach(i=>i.count=Number(i.initialCount??i.count));saveState();renderItems();alert('アイテム数をリセットしました。')}
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mikeneko-settings.json';a.click();URL.revokeObjectURL(a.href)}
+async function bulkAdd(){try{const list=JSON.parse($('bulkJson').value);if(!Array.isArray(list))throw Error('JSONは配列にしてください');list.forEach((x,n)=>{if(!x.name)throw Error(`${n+1}件目のnameがありません`);const count=Math.max(0,Number(x.count)||0);state.items.push({id:'bulk-'+Date.now()+'-'+n+'-'+Math.random().toString(36).slice(2,5),name:String(x.name),count,initialCount:count,rare:!!x.rare,image:String(x.image||''),info:String(x.info||'')})});saveState();renderItems();alert(`${list.length}件を追加しました`)}catch(e){alert('JSONを確認してください：'+e.message)}}
+function downloadResult(){const name=lastResult?.name||$('resultName').textContent;if(!name)return;const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600"><rect width="900" height="600" fill="#f0eee9"/><rect x="22" y="22" width="856" height="556" fill="none" stroke="#aaa59c" stroke-width="2"/><rect x="34" y="34" width="832" height="532" fill="none" stroke="#c8c3ba"/><g fill="#77736d" text-anchor="middle"><text x="450" y="155" font-size="40">●　●</text><text x="450" y="190" font-size="34">　●</text><text x="450" y="260" font-size="20" letter-spacing="8">TODAY'S FORTUNE</text><text x="450" y="350" font-size="42" fill="#181715">${esc(name)}</text><text x="450" y="440" font-size="34">●　●</text><text x="450" y="475" font-size="30">　●</text><text x="450" y="530" font-size="14" letter-spacing="4">${esc(lastResult?.date||'')}</text></g></svg>`;const blob=new Blob([svg],{type:'image/svg+xml'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='今日の三毛猫さん_当選カード.svg';a.click();URL.revokeObjectURL(a.href)}
+$('drawButton').onclick=startDraw;$('sayHello').onclick=()=>choose('hello');$('petCat').onclick=()=>choose('pet');
+$('historyOpen').onclick=$('historyOpen2').onclick=()=>{renderHistory();openOverlay('historyOverlay')};
+$('adminOpen').onclick=()=>{openOverlay('adminOverlay');if(adminLoggedIn){loadSettingsForm();renderItems()}};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o.id)}));
+$('loginButton').onclick=login;$('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('logoutButton').onclick=logout;
+$('saveSettings').onclick=saveSettings;$('resetDaily').onclick=resetDaily;$('resetItems').onclick=resetItems;$('itemForm').onsubmit=saveItem;$('clearItemForm').onclick=clearItemForm;$('bulkAdd').onclick=bulkAdd;$('exportData').onclick=exportData;$('downloadResult').onclick=downloadResult;
+$('imageFolder').addEventListener('change', async e=>{
+  const files=[...e.target.files].filter(f=>f.type.startsWith('image/')||/\\.svg$/i.test(f.name));
+  if(!files.length){$('folderStatus').textContent='画像が見つかりませんでした';return}
+  const existing=new Set(state.items.map(i=>(i.sourceFile||'').toLowerCase()));
+  let added=0, skipped=0;
+  $('folderStatus').textContent=`${files.length}枚を読み込み中…`;
+  for(const file of files){
+    const relative=file.webkitRelativePath||file.name;
+    const key=relative.toLowerCase();
+    if(existing.has(key)){skipped++;continue}
+    try{
+      const image=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});
+      const name=file.name.replace(/\\.[^.]+$/,'')||file.name;
+      const count=1;
+      state.items.push({id:'folder-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),name,count,initialCount:count,rare:false,image,info:'',sourceFile:relative});
+      existing.add(key);added++;
+    }catch(err){console.warn('画像を読み込めませんでした',file.name,err)}
+  }
+  saveState();renderItems();
+  $('folderStatus').textContent=`追加 ${added}件${skipped?`／重複スキップ ${skipped}件`:''}。アイテム名は一覧の「編集」から変更できます。`;
+  e.target.value='';
+});
+$('refreshButton').onclick=()=>{loadState();ensureDay();applyTheme();loadSettingsForm();renderItems();renderHistory();alert('保存済みの設定を読み込みました。')};
+$('importData').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!data||!Array.isArray(data.items))throw Error('items配列がありません');state={...clone(defaults),...data};saveState();applyTheme();loadSettingsForm();renderItems();alert('JSONを読み込みました')}catch(err){alert('読み込み失敗：'+err.message)}e.target.value=''};
+loadState();ensureDay();applyTheme();renderHistory();
+</script>
+</body></html>
